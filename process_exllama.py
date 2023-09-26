@@ -42,7 +42,13 @@ class LlmState:
         self.max_reply_tokens = max_reply_tokens
 
         if not os.path.exists(model_path):
-            model_path = huggingface_hub.snapshot_download(model_path)
+            if "@" in model_path:
+                (model_path, revision) = model_path.split("@")
+            else:
+                revision = None
+            model_path = huggingface_hub.snapshot_download(
+                model_path, revision=revision
+            )
 
         if checkpoint_path is None:
             st_pattern = os.path.join(model_path, "*.safetensors")
@@ -115,6 +121,8 @@ def process_single(row: Dict) -> Dict:
         return {"success": False, "response": None, "id": row["id"]}
 
     res = parse_score(row["id"], response)
+    if not res:
+        return {"success": False}
     return {"success": True, **res}
 
 

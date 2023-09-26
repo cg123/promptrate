@@ -75,6 +75,10 @@ Please assign a score to the transcript using the following 5-point scale:
 4: The chatbot's replies are well-written, narratively coherent, and stay in character. There is only minor room for improvement.
 5: The chatbot's roleplaying is exemplary. It is engaging, creative, well-paced, and true to the character and scenario.
 
+Other reasons to deduct points include:
+* Acting on behalf of the user's characters
+* Speaking out of character
+
 Please first provide a brief reasoning you used to derive the rating score, and then write "Score: <rating>" in the last line.
 
 Character Bio:

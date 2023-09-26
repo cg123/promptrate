@@ -8,26 +8,33 @@ import rathe
 import torch
 import typer
 from rathe.conversion import ConversionContext
+from typing_extensions import Annotated
 
 import prompts
 from common import load_data
-from process_vllm import process_vllm
 from process_exllama import process_exllama
-
+from process_vllm import process_vllm
 
 MAX_REPLY_TOKENS = 300
 
 
 def main(
-    dataset: str,
-    data_file: List[str] = [],
-    prompt_parser: str = "orca",
-    prompt_format: str = "alpaca",
-    judge_type: str = "assistant",
-    judge_model: str = "Open-Orca/OpenOrca-Platypus2-13B",
-    engine: str = "exllama",
+    dataset: Annotated[str, typer.Argument(help="HuggingFace dataset to critique")],
+    data_file: Annotated[List[str], typer.Option(help="List of files to include")] = [],
+    prompt_parser: Annotated[str, typer.Option(help="Parser for dataset")] = "orca",
+    prompt_format: Annotated[
+        str, typer.Option(help="Prompt format used by judge model")
+    ] = "alpaca",
+    judge_type: Annotated[
+        str, typer.Option(help="assistant, rp, or commitpack")
+    ] = "assistant",
+    judge_model: Annotated[
+        str, typer.Option(help="Model to use")
+    ] = "TheBloke/OpenOrca-Platypus2-13B-GPTQ@gptq-4bit-32g-actorder_True",
+    engine: Annotated[str, typer.Option(help="exllama or vllm")] = "exllama",
     offset: int = -1,
     last_index: int = -1,
+    shuffle: bool = False,
     batch_size: int = 128,
     num_gpus: int = -1,
 ):
@@ -59,6 +66,7 @@ def main(
         conversion_context=conversion_context,
         offset=offset,
         last_index=last_index,
+        shuffle=shuffle,
     )
     dbname = "ratings_" + dataset.replace("/", "_").replace(":", "_")
     with shelve.open(dbname) as db:

@@ -28,6 +28,7 @@ def load_data(
     data_files: Optional[List[str]] = None,
     offset: int = -1,
     last_index: int = -1,
+    shuffle: bool = False,
 ) -> datasets.Dataset:
     logging.info("loading dataset...")
     data = datasets.load_dataset(dataset, data_files=data_files)
@@ -52,10 +53,13 @@ def load_data(
 
     logging.info("parsing and formatting prompts...")
     t = PromptTransform(parser, get_judge_prompt, conversion_context)
-    data = data.map(
+    data: datasets.Dataset = data.map(
         t,
         num_proc=os.cpu_count(),
     )
+
+    if shuffle:
+        data = data.shuffle(seed=4)
     return data
 
 

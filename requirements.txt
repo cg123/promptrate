@@ -10,3 +10,5 @@ tqdm
 typer
 rathe @ git+https://github.com/cg123/rathe.git@feature/rp
 vllm
+flash-attn
+typing-extensions
