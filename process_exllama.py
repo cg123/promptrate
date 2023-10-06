@@ -128,7 +128,7 @@ def process_single(row: Dict) -> Dict:
 
 def process_exllama(
     judge_model: str,
-    _batch_size: int,
+    _group_size: int,
     num_gpus: int,
     max_reply_tokens: int,
     formatter: PromptFormatter,

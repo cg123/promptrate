@@ -21,7 +21,7 @@ MAX_REPLY_TOKENS = 300
 def main(
     dataset: Annotated[str, typer.Argument(help="HuggingFace dataset to critique")],
     data_file: Annotated[List[str], typer.Option(help="List of files to include")] = [],
-    prompt_parser: Annotated[str, typer.Option(help="Parser for dataset")] = "orca",
+    prompt_parser: Annotated[str, typer.Option(help="Parser for dataset")] = "alpaca",
     prompt_format: Annotated[
         str, typer.Option(help="Prompt format used by judge model")
     ] = "alpaca",
@@ -32,10 +32,12 @@ def main(
         str, typer.Option(help="Model to use")
     ] = "TheBloke/OpenOrca-Platypus2-13B-GPTQ@gptq-4bit-32g-actorder_True",
     engine: Annotated[str, typer.Option(help="exllama or vllm")] = "exllama",
+    vllm_group_size: Annotated[
+        int, typer.Option(help="Number of examples to feed vLLM at once")
+    ] = 128,
     offset: int = -1,
     last_index: int = -1,
     shuffle: bool = False,
-    batch_size: int = 128,
     num_gpus: int = -1,
 ):
     logging.basicConfig(level=logging.INFO)
@@ -79,7 +81,7 @@ def main(
 
         process_fn(
             judge_model,
-            batch_size,
+            vllm_group_size,
             num_gpus,
             MAX_REPLY_TOKENS,
             formatter,

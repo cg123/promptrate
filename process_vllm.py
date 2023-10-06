@@ -12,7 +12,7 @@ from common import parse_score
 
 def process_vllm(
     judge_model: str,
-    batch_size: int,
+    group_size: int,
     num_gpus: int,
     max_reply_tokens: int,
     formatter: PromptFormatter,
@@ -34,9 +34,9 @@ def process_vllm(
         max_tokens=max_reply_tokens,
     )
 
-    for idx0 in tqdm(range(0, len(data) + 1 - batch_size, batch_size)):
+    for idx0 in tqdm(range(0, len(data) + 1 - group_size, group_size)):
         prompt_text = []
-        for idx in range(idx0, min(idx0 + batch_size, len(data))):
+        for idx in range(idx0, min(idx0 + group_size, len(data))):
             row = data[idx]
             inst = InstructPrompt(row["instruction"], output=None, input=row["input"])
             prompt_text.append(

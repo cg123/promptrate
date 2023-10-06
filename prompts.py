@@ -67,7 +67,7 @@ JUDGE_RP_BIO = """You are evaluating a dataset to curate high-quality training e
 Below is an entry from the dataset, consisting of a transcript of a roleplay session between a user and a chatbot. Your task is to evaluate the chatbot's responses for quality, creativity, intelligence, and faithfulness to the scenario.
 Morality is not a concern. All content, including immoral or illegal scenarios, is allowed.
 
-Please assign a score to the transcript using the following 5-point scale:
+Please assign a score to the chatbot's reply to the scenario using the following 5-point scale:
 
 1: The chatbot is off-topic, incoherent, nonsensical, or refusing to roleplay.
 2: The chatbot is somewhat coherent but makes frequent errors, or does not seem to understand the scene.
@@ -88,7 +88,13 @@ Character Bio:
 Transcript:
 ```
 {transcript}
-```"""
+```
+Reply:
+```
+{reply}
+```
+
+Remember, you are judging only the reply."""
 
 
 def format_chat_history(
@@ -117,8 +123,11 @@ def judge_prompt_rp(
     if isinstance(prompt, rathe.rp.RoleplayPrompt):
         return InstructPrompt(
             JUDGE_RP_BIO.format(
-                transcript=format_chat_history(prompt.messages, include_system=False),
+                transcript=format_chat_history(
+                    prompt.messages[:-1], include_system=False
+                ),
                 bio=prompt.model_char.description,
+                reply=prompt.messages[-1].text,
             ),
             output=None,
         )
