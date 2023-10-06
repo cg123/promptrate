@@ -120,7 +120,7 @@ def process_single(row: Dict) -> Dict:
         logging.error(f"Failed to process prompt {row['id']}", exc_info=e)
         return {"success": False, "response": None, "id": row["id"]}
 
-    res = parse_score(row["id"], response)
+    res = parse_score(row["id"], response.strip())
     if not res:
         return {"success": False}
     return {"success": True, **res}
